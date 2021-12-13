@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +32,8 @@ public class Continent {
   @Enumerated(EnumType.STRING)
   private ContinentName continentName; //대륙명
 
-
-
+  @Builder
+  public Continent(ContinentName continentName) {
+    this.continentName = continentName;
+  }
 }
