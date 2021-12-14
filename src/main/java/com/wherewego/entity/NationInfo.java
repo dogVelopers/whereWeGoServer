@@ -40,8 +40,8 @@ public class NationInfo {
   @Column
   private String quarantinePolicy; //방역방침
 
-  @Column
-  private String imageUrl; //이미지
+  @Column(columnDefinition = "TEXT")
+  private String imageUrl; //이미지URL
 
   @Builder
   public NationInfo(Continent continent, String nationName, String introduce,
@@ -52,4 +52,5 @@ public class NationInfo {
     this.quarantinePolicy = quarantinePolicy;
     this.imageUrl = imageUrl;
   }
+
 }
