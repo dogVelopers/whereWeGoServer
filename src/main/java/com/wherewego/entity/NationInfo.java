@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -42,4 +43,13 @@ public class NationInfo {
   @Column
   private String imageUrl; //이미지
 
+  @Builder
+  public NationInfo(Continent continent, String nationName, String introduce,
+      String quarantinePolicy, String imageUrl) {
+    this.continent = continent;
+    this.nationName = nationName;
+    this.introduce = introduce;
+    this.quarantinePolicy = quarantinePolicy;
+    this.imageUrl = imageUrl;
+  }
 }
