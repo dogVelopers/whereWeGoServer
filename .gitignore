@@ -4,6 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+.idea/workspace.xml
 
 ### STS ###
 .apt_generated
@@ -36,3 +37,10 @@ out/
 ### VS Code ###
 .vscode/
 /src/main/resources/application.yml
+/src/main/resources/application-aws.yml
+/src/main/resources/application-credentials.yml
+/.gradle/
+/gradle/
+/.github/
+/gradle/wrapper/
+/.idea/
