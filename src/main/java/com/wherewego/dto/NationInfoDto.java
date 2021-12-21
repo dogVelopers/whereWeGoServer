@@ -1,6 +1,5 @@
 package com.wherewego.dto;
 
-import com.wherewego.entity.Continent;
 import com.wherewego.entity.NationInfo;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class NationInfoDto {
 
-  private Continent continent;
+  private String continentName;
   private String nationName;
   private String introduce;
   private String quarantinePolicy;
@@ -22,7 +21,7 @@ public class NationInfoDto {
 
   public NationInfo toEntity() {
     NationInfo nationInfo = NationInfo.builder()
-        .continent(continent)
+        .continentName(continentName)
         .nationName(nationName)
         .introduce(introduce)
         .quarantinePolicy(quarantinePolicy)
@@ -32,9 +31,9 @@ public class NationInfoDto {
   }
 
   @Builder
-  public NationInfoDto(Continent continent, String nationName, String introduce,
+  public NationInfoDto(String continentName, String nationName, String introduce,
       String quarantinePolicy, String imageUrl) {
-    this.continent = continent;
+    this.continentName = continentName;
     this.nationName = nationName;
     this.introduce = introduce;
     this.quarantinePolicy = quarantinePolicy;

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,9 +28,12 @@ public class NationInfo {
   @Column(name = "nation_info_id")
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "continent_id")
-  private Continent continent; //대륙id(fk)
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "continent_id")
+//  private Continent continent; //대륙id(fk)
+
+  @Column
+  private String continentName; //대륙명
 
   @Column
   private String nationName; //나라명
@@ -44,13 +48,12 @@ public class NationInfo {
   private String imageUrl; //이미지URL
 
   @Builder
-  public NationInfo(Continent continent, String nationName, String introduce,
+  public NationInfo(String continentName, String nationName, String introduce,
       String quarantinePolicy, String imageUrl) {
-    this.continent = continent;
+    this.continentName = continentName;
     this.nationName = nationName;
     this.introduce = introduce;
     this.quarantinePolicy = quarantinePolicy;
     this.imageUrl = imageUrl;
   }
-
 }
