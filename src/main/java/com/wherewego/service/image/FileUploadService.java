@@ -1,4 +1,4 @@
-package com.wherewego.service;
+package com.wherewego.service.image;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Service
 public class FileUploadService {
 
-  private final UploadService s3Service;
+  private final AwsS3UploadService s3Service;
 
   public String uploadImage(MultipartFile file) {
     String fileName = createFileName(file.getOriginalFilename());
@@ -26,11 +26,13 @@ public class FileUploadService {
       throw new IllegalArgumentException(
           String.format("파일 변환 중 에러가 발생하였습니다 (%s)", file.getOriginalFilename()));
     }
+
     return s3Service.getFileUrl(fileName);
   }
 
   private String createFileName(String originalFileName) {
-    return UUID.randomUUID().toString().concat(getFileExtension(originalFileName)); //기존의 파일명을 통해서 랜덤으로 숫자와 영어로 구성된 이름을 만들어 저장함
+    return UUID.randomUUID().toString()
+        .concat(getFileExtension(originalFileName)); //기존의 파일명을 통해서 랜덤으로 숫자와 영어로 구성된 이름을 만들어 저장함
   }
 
   private String getFileExtension(String fileName) {
