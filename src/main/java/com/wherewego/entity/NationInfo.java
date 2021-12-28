@@ -2,15 +2,12 @@ package com.wherewego.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "nation_info")
 public class NationInfo {
 
@@ -27,10 +25,6 @@ public class NationInfo {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "nation_info_id")
   private Long id;
-
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "continent_id")
-//  private Continent continent; //대륙id(fk)
 
   @Column
   private String continentName; //대륙명
@@ -56,4 +50,5 @@ public class NationInfo {
     this.quarantinePolicy = quarantinePolicy;
     this.imageUrl = imageUrl;
   }
+
 }
