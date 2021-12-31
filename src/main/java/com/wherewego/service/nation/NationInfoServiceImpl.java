@@ -6,6 +6,8 @@ import com.wherewego.entity.NationInfo;
 import com.wherewego.repository.NationInfoRepository;
 import com.wherewego.service.image.AwsS3UploadService;
 import com.wherewego.service.image.FileUploadService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -53,6 +55,32 @@ public class NationInfoServiceImpl implements NationInfoService {
 
     nationInfoRepository.save(nationInfo);
     return new NationInfoResponseDto(nationInfo);
+  }
+
+  @Override //국가정보 전체 조회 메소드
+  @Transactional(rollbackFor = Exception.class)
+  public List<NationInfoResponseDto> readAllNationInfo() {
+
+    List<NationInfoResponseDto> nationInfoResponseDtos = new ArrayList<>();
+    for (NationInfo nationInfo : nationInfoRepository.findAll()) {
+      NationInfoResponseDto nationInfoResponseDto = new NationInfoResponseDto(
+          nationInfo);
+      nationInfoResponseDtos.add(nationInfoResponseDto);
+    }
+
+    return nationInfoResponseDtos;
+  }
+
+  @Override //국가정보 낱개 조회 메소드
+  @Transactional(rollbackFor = Exception.class)
+  public List<NationInfoResponseDto> readNationInfo(Long id) {
+    NationInfo nationInfo = nationInfoRepository.findById(id).orElseThrow();
+    List<NationInfoResponseDto> nationInfoResponseDtos = new ArrayList<>();
+
+    NationInfoResponseDto nationInfoResponseDto = new NationInfoResponseDto(nationInfo);
+    nationInfoResponseDtos.add(nationInfoResponseDto);
+
+    return nationInfoResponseDtos;
   }
 
   @Override
