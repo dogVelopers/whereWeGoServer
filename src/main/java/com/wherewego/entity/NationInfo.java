@@ -19,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "nation_info")
-public class NationInfo {
+public class NationInfo extends TimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
