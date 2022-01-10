@@ -25,16 +25,48 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+
       - name: Build with Gradle
         uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
         with:
           arguments: build
+
       - name: Get Current Time
         uses: 1466587594/get-current-time@v2
         id: current-time
         with:
           format: YYYY-MM-DDTHH:mm:ss
           utcOffset: "+09:00" # 기준이 UTC이기 때문에 한국시간인 KST를 맞추기 위해 +9시간 추가
+
       - name: Print Current Time
         run: echo "Current Time=${{steps.current-time.outputs.formattedTime}}" # current-time 에서 지정한 포맷대로 현재 시간 출력
         shell: bash
+
+#      - name: Upload S3
+#        env:
+#          AWS_ACCESS_KEY_ID: server-developer
+#          AWS_SECRET_ACCESS_KEY: @Wherewego
+#        run: |
+#          aws s3 cp \
+#            --region ap-northeast-2 \
+#            ./build/libs/*.jar s3:wherwego
+
+      - name: Make zip file #1
+        run: zip -qq -r ./$GITHUB_SHA.zip .
+        shell: bash
+
+      - name: Configure AWS credentials #2
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
+          aws-region: ap-northeast-2
+
+      - name: Upload to S3 #3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://wherewego/$GITHUB_SHA.zip
+
+      - name: Code Deploy #4
+        run: aws deploy create-deployment --application-name wherewego
+          --deployment-config-name CodeDeployDefault.OneAtATime
+          --deployment-group-name wherewego
+          --s3-location bucket=wherewego,bundleType=zip,key=$GITHUB_SHA.zip
