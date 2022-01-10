@@ -5,7 +5,6 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 .idea/workspace.xml
-deploy.sh
 appspec.yml
 
 ### STS ###
@@ -47,4 +46,3 @@ out/
 /.github/
 /gradle/wrapper/
 /.idea/
-
