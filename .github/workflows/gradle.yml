@@ -1,31 +1,50 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
 name: Java CI with Gradle
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, dev ] # master, dev에 푸시 이벤트가 발생하면 실행
   pull_request:
-    branches: [ master ]
+    branches: [ master, dev ] # master, dev에 풀리퀘스트 이벤트가 발생하면 실행
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'adopt'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
-      with:
-        arguments: build
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11 # JDK 11 버전 사용
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew # gradlew 을 사용하기 위한 실행권한 획득
+      - name: Build with Gradle # 빌드
+        env:
+          ubi_email: ${{ secrets.ubi_email }} # 환경변수 설정
+          ubi_pw: ${{ secrets.ubi_pw }} # 환경변수 설정
+        run: |
+          ./gradlew --version
+          ./gradlew build
+      - name: If failure then upload test reports
+        if: failure() # 테스트나 빌드가 실패시 실행
+        run: |
+          TARBALL_BASENAME="r6-stats-report"
+          TARBALL="$TARBALL_BASENAME.tar"
+          
+          echo 'Collecting the test report'
+          find . -path '*/build/reports/tests' -type d \
+            -exec tar rf "$TARBALL" \
+              --xform="s:./:$TARBALL_BASENAME/:" \
+              --xform='s:/build/reports/tests::' \
+              {} ';'
+          
+          echo 'Compressing the test reports .. '
+          gzip "$TARBALL"
+          
+          echo 'Uploading the test reports .. '
+          curl -F "file=@$TARBALL.gz" 'https://file.io/'
+          echo
+          echo 'Download the test reports from the URL above.'
