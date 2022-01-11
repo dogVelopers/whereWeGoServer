@@ -1,4 +1,4 @@
-REPOSITORY=/home/ec2-user/app
+REPOSITORY=/home/ec2-user/app/git
 cd $REPOSITORY
 
 APP_NAME=curriculum #1
