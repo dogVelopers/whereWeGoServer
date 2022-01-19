@@ -61,15 +61,24 @@ public class NationInfoServiceImpl implements NationInfoService {
 //    System.out.println(
 //        "S3 Url -> " + awsS3UploadService.getFileUrl(fileUploadService.uploadImage(file)));
 
-    if (file.isEmpty()) {
+    if (file.isEmpty()) { // 파일이 null일 경우, 에러를 띄워줌.
       throw new CustomException(NOT_FOUND_IMAGE_FILE);
     }
 
     String imgPath = fileUploadService.uploadImage(file);
-    nationInfoRequestDto.setImageUrl(imgPath);
+//      nationInfoRequestDto.setImageUrl(imgPath);
+    nationInfo.setImageUrl(imgPath);
 
     nationInfoRepository.save(nationInfo);
+
     return new NationInfoResponseDto(nationInfo);
+
+//    // DB에 이미지를 저장하면서 동시에 S3에 업로드 하는 코드
+//    String imgPath = fileUploadService.uploadImage(file);
+//    nationInfoRequestDto.setImageUrl(imgPath);
+//
+//    return new NationInfoResponseDto(
+//        nationInfoRepository.save(nationInfoRequestDto.toEntity()));
   }
 
   @Override //국가정보 전체 조회 메소드

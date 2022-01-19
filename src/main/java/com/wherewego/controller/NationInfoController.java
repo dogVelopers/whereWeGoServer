@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api")
 public class NationInfoController {
 
@@ -33,7 +33,7 @@ public class NationInfoController {
     return ResponseEntity.ok(nationInfoService.save(file, nationInfoRequestDto));
   }
 
-  @PatchMapping("/nation-infos/{id}") //국가정보 수정
+  @PostMapping("/nation-infos/{id}") //국가정보 수정
   public ResponseEntity<NationInfoResponseDto> update(@PathVariable Long id,
       @RequestPart(value = "file", required = false) MultipartFile file,
       @RequestPart(value = "nationInfoRequestDto") NationInfoRequestDto nationInfoRequestDto) {
