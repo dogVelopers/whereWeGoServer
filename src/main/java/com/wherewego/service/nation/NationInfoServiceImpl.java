@@ -67,13 +67,21 @@ public class NationInfoServiceImpl implements NationInfoService {
     nationInfo.setIntroduce(nationInfoRequestDto.getIntroduce());
     nationInfo.setQuarantinePolicy(nationInfoRequestDto.getQuarantinePolicy());
 
-    // 파일이 null일 경우, 에러를 띄워줌.
+//    // 파일이 null일 경우, 에러를 띄워줌.
+//    if (file.isEmpty()) {
+//      throw new CustomException(NOT_FOUND_IMAGE_FILE);
+//    }
+
+    // 파일이 null일 경우, 기존의 이미지 url을 저장
     if (file.isEmpty()) {
-      throw new CustomException(NOT_FOUND_IMAGE_FILE);
+      nationInfo.setImageUrl(nationInfo.getImageUrl());
     }
 
-    String imgPath = fileUploadService.uploadImage(file);
-    nationInfo.setImageUrl(imgPath);
+    // 파일이 null이 아닐 경우, 새로운 이미지 업로드 및 저장
+    if (!file.isEmpty()) {
+      String imgPath = fileUploadService.uploadImage(file);
+      nationInfo.setImageUrl(imgPath);
+    }
     nationInfoRepository.save(nationInfo);
 
     return new NationInfoResponseDto(nationInfo);
