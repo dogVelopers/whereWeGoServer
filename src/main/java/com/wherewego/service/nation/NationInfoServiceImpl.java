@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.wherewego.enumType.ErrorCode.DUPLICATE_RESOURCE;
 import static com.wherewego.enumType.ErrorCode.NOT_FOUND_IMAGE_FILE;
 import static com.wherewego.enumType.ErrorCode.NOT_FOUND_NATION_INFO;
 
@@ -33,8 +34,17 @@ public class NationInfoServiceImpl implements NationInfoService {
   @Transactional
   public NationInfoResponseDto save(@RequestPart MultipartFile file,
       NationInfoRequestDto nationInfoRequestDto) { //국가정보 저장 메소드
+
+    // 파일이 null일 경우, 에러를 띄워줌.
     if (file.isEmpty()) {
       throw new CustomException(NOT_FOUND_IMAGE_FILE);
+    }
+
+    // 이미 등록되어 있는 대륙&국가의 정보를 새로 등록하는 경우, 에러를 띄워줌.
+    if (nationInfoRepository.existsByContinentName(nationInfoRequestDto.getContinentName())
+        && nationInfoRepository.existsByNationName(
+        nationInfoRequestDto.getNationName())) {
+      throw new CustomException(DUPLICATE_RESOURCE);
     }
 
     // DB에 이미지를 저장하면서 동시에 S3에 업로드 하는 코드
@@ -57,28 +67,24 @@ public class NationInfoServiceImpl implements NationInfoService {
     nationInfo.setIntroduce(nationInfoRequestDto.getIntroduce());
     nationInfo.setQuarantinePolicy(nationInfoRequestDto.getQuarantinePolicy());
 
-//    System.out.println("DB Url -> " + nationInfo.getImageUrl());
-//    System.out.println(
-//        "S3 Url -> " + awsS3UploadService.getFileUrl(fileUploadService.uploadImage(file)));
+//    // 파일이 null일 경우, 에러를 띄워줌.
+//    if (file.isEmpty()) {
+//      throw new CustomException(NOT_FOUND_IMAGE_FILE);
+//    }
 
-    if (file.isEmpty()) { // 파일이 null일 경우, 에러를 띄워줌.
-      throw new CustomException(NOT_FOUND_IMAGE_FILE);
+    // 파일이 null일 경우, 기존의 이미지 url을 저장
+    if (file.isEmpty()) {
+      nationInfo.setImageUrl(nationInfo.getImageUrl());
     }
 
-    String imgPath = fileUploadService.uploadImage(file);
-//      nationInfoRequestDto.setImageUrl(imgPath);
-    nationInfo.setImageUrl(imgPath);
-
+    // 파일이 null이 아닐 경우, 새로운 이미지 업로드 및 저장
+    if (!file.isEmpty()) {
+      String imgPath = fileUploadService.uploadImage(file);
+      nationInfo.setImageUrl(imgPath);
+    }
     nationInfoRepository.save(nationInfo);
 
     return new NationInfoResponseDto(nationInfo);
-
-//    // DB에 이미지를 저장하면서 동시에 S3에 업로드 하는 코드
-//    String imgPath = fileUploadService.uploadImage(file);
-//    nationInfoRequestDto.setImageUrl(imgPath);
-//
-//    return new NationInfoResponseDto(
-//        nationInfoRepository.save(nationInfoRequestDto.toEntity()));
   }
 
   @Override //국가정보 전체 조회 메소드
@@ -99,7 +105,7 @@ public class NationInfoServiceImpl implements NationInfoService {
   @Transactional(rollbackFor = Exception.class)
   public List<NationInfoResponseDto> readNationInfo(Long id) {
     NationInfo nationInfo = nationInfoRepository.findById(id)
-        .orElseThrow(() -> new CustomException(NOT_FOUND_NATION_INFO));
+        .orElseThrow(() -> new CustomException(NOT_FOUND_NATION_INFO)); // 존재하지 않는 id 값일 경우 에러를 발생시킴
     List<NationInfoResponseDto> nationInfoResponseDtos = new ArrayList<>();
 
     NationInfoResponseDto nationInfoResponseDto = new NationInfoResponseDto(nationInfo);
@@ -112,7 +118,7 @@ public class NationInfoServiceImpl implements NationInfoService {
   @Transactional(rollbackFor = Exception.class)
   public HttpStatus delete(Long id) { //국가정보 삭제 메소드
     NationInfo nationInfo = nationInfoRepository.findById(id)
-        .orElseThrow(() -> new CustomException(NOT_FOUND_NATION_INFO));
+        .orElseThrow(() -> new CustomException(NOT_FOUND_NATION_INFO)); // 존재하지 않는 id 값일 경우 에러를 발생시킴
 
     nationInfoRepository.delete(nationInfo);
     return HttpStatus.OK;
