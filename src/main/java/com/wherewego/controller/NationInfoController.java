@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
-//@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api")
 public class NationInfoController {
 
