@@ -11,6 +11,7 @@ import com.wherewego.service.image.FileUploadService;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.wherewego.enumType.ErrorCode.DUPLICATE_RESOURCE;
+import static com.wherewego.enumType.ErrorCode.NOT_FOUND_CONTINENT_NAME;
 import static com.wherewego.enumType.ErrorCode.NOT_FOUND_IMAGE_FILE;
 import static com.wherewego.enumType.ErrorCode.NOT_FOUND_NATION_INFO;
 
@@ -114,11 +116,27 @@ public class NationInfoServiceImpl implements NationInfoService {
     return nationInfoResponseDtos;
   }
 
+  @Override //국가정보 대륙별 조회 메소드
+  @Transactional(rollbackFor = Exception.class)
+  public List<NationInfoResponseDto> readNationInfoContinentName(String continentName) {
+
+//    // 데이터에 없는 대륙을 조회할 경우 에러를 발생시킴
+//    if (nationInfoRepository.findByContinentNameContains(continentName) == null) {
+//      throw new CustomException(NOT_FOUND_CONTINENT_NAME);
+//    }
+
+    return nationInfoRepository.findByContinentNameContains(continentName)
+        .stream()
+        .map(NationInfoResponseDto::new)
+        .collect(Collectors.toList());
+  }
+
   @Override
   @Transactional(rollbackFor = Exception.class)
   public HttpStatus delete(Long id) { //국가정보 삭제 메소드
     NationInfo nationInfo = nationInfoRepository.findById(id)
-        .orElseThrow(() -> new CustomException(NOT_FOUND_NATION_INFO)); // 존재하지 않는 id 값일 경우 에러를 발생시킴
+        .orElseThrow(
+            () -> new CustomException(NOT_FOUND_NATION_INFO)); // 존재하지 않는 id 값일 경우 에러를 발생시킴
 
     nationInfoRepository.delete(nationInfo);
     return HttpStatus.OK;
