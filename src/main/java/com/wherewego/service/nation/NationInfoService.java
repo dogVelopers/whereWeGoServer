@@ -19,6 +19,8 @@ public interface NationInfoService {
 
   List<NationInfoResponseDto> readNationInfo(Long id);
 
+  List<NationInfoResponseDto> readNationInfoContinentName(String continentName);
+
   HttpStatus delete(Long id);
 
 }

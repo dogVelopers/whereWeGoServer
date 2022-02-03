@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,6 +49,19 @@ public class NationInfoController {
   @GetMapping("/nation-infos/{id}") //국가정보 낱개 조회
   public ResponseEntity<NationInfoResponseDto> readNationInfo(@PathVariable Long id) {
     return new ResponseEntity(nationInfoService.readNationInfo(id),
+        HttpStatus.OK);
+  }
+
+//  @GetMapping("/nation-infos/{continentName}") //국가정보 대륙별 조회
+//  public ResponseEntity<NationInfoResponseDto> readNationInfoContinentName(@PathVariable String continentName) {
+//    return new ResponseEntity(nationInfoService.readNationInfoContinentName(continentName),
+//        HttpStatus.OK);
+//  }
+
+  @GetMapping("/nation-infos/search") //국가정보 대륙별 조회
+  public ResponseEntity<NationInfoResponseDto> readNationInfoContinentName(
+      @RequestParam String continentName) {
+    return new ResponseEntity(nationInfoService.readNationInfoContinentName(continentName),
         HttpStatus.OK);
   }
 
