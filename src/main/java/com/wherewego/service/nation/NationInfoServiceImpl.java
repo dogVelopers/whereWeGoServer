@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.wherewego.enumType.ErrorCode.DUPLICATE_RESOURCE;
-import static com.wherewego.enumType.ErrorCode.NOT_FOUND_CONTINENT_NAME;
 import static com.wherewego.enumType.ErrorCode.NOT_FOUND_IMAGE_FILE;
 import static com.wherewego.enumType.ErrorCode.NOT_FOUND_NATION_INFO;
 

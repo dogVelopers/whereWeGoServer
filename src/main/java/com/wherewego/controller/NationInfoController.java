@@ -58,7 +58,7 @@ public class NationInfoController {
 //        HttpStatus.OK);
 //  }
 
-  @GetMapping("/nation-infos/search") //국가정보 대륙별 조회
+  @GetMapping(path = "/nation-infos", params = "continentName") //국가정보 대륙별 조회
   public ResponseEntity<NationInfoResponseDto> readNationInfoContinentName(
       @RequestParam String continentName) {
     return new ResponseEntity(nationInfoService.readNationInfoContinentName(continentName),
